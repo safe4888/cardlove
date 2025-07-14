@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="จดหมายดอกซากุระ">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#ffeef8">
+    <title>จดหมายดอกซากุระ</title>
+    <style>
+
+        .strong-name {
+    color: #212529; /* สีดำเข้ม */
+    font-weight: bold;
+}
+.letter-signature .strong-name {
+    color: #212529 !important;
+    font-style: normal;
+    opacity: 1;
+}
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #f5f1ff 50%, #e8f5e8 100%);
+            min-height: 100vh;
+            min-height: 100dvh; /* Dynamic viewport height for mobile */
+            overflow-x: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            touch-action: manipulation;
+        }
+
+        .sakura-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .sakura {
+            position: absolute;
+            font-size: 20px;
+            color: #ffb3d9;
+            animation: fall linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .title {
+            font-size: 32px;
+            color: #d63384;
+            margin-bottom: 40px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+            to { text-shadow: 2px 2px 4px rgba(214,51,132,0.3); }
+        }
+
+        .letter-scene {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .bear-container {
+            position: relative;
+            animation: bearBounce 3s ease-in-out infinite;
+        }
+
+        .bear {
+            font-size: 80px;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));
+            position: relative;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: transform 0.3s ease;
+        }
+
+        .bear:active {
+            transform: scale(0.95);
+        }
+
+        .bear::after {
+            content: '💕';
+            position: absolute;
+            top: -20px;
+            right: -10px;
+            font-size: 25px;
+            animation: heartFloat 2s ease-in-out infinite;
+        }
+
+        @keyframes bearBounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes heartFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(5deg); }
+        }
+
+        .letter-envelope {
+    position: relative;
+    width: 320px;
+    height: 200px;
+    background: linear-gradient(145deg, #fce4ec, #f8bbd0);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transform-style: preserve-3d;
+}
+
+        .letter-envelope:hover,
+.letter-envelope:active {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 35px rgba(0,0,0,0.25);
+}
+
+        .letter-envelope:active {
+            transform: translateY(-5px) rotateX(2deg);
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(135deg, #ff9999, #ffb3ba);
+            border-radius: 15px 15px 0 0;
+            transform-origin: bottom center;
+            transition: transform 0.5s ease;
+            z-index: 2;
+        }
+
+        .envelope-flap::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-bottom: 80px solid #ff9999;
+        }
+
+        .envelope-flap::after {
+    content: '💖';
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 26px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+        .letter-envelope.opened .envelope-flap {
+            transform: rotateX(-180deg);
+        }
+
+        .letter-paper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            height: 150px;
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 20px;
+            font-size: 14px;
+            line-height: 1.4;
+            color: #495057;
+            opacity: 0;
+            transition: all 0.5s ease;
+            z-index: 1;
+        }
+
+        .letter-envelope.opened .letter-paper {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .instruction {
+            text-align: center;
+            font-size: 18px;
+            color: #6c757d;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .letter-content {
+            max-width: 600px;
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .letter-content.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .letter-content::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            border-radius: 20px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .letter-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ff9999;
+        }
+
+        .letter-header h2 {
+            font-size: 28px;
+            color: #d63384;
+            margin-bottom: 10px;
+        }
+
+        .letter-date {
+            font-size: 16px;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .letter-body {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #495057;
+            margin-bottom: 30px;
+        }
+
+        .letter-body p {
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        .letter-signature {
+    text-align: right;
+    font-size: 16px;
+    color: rgba(108, 117, 125, 0.6); /* ทำให้สีจางลง */
+    font-style: italic;
+    border-top: 1px solid rgba(222, 226, 230, 0.5); /* เส้นขีดจางลง */
+    padding-top: 20px;
+    margin-bottom: 30px;
+    opacity: 0.8; /* ทำให้ทั้งกล่องจางลงอีกนิด */
+}
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-button:hover,
+        .close-button:active {
+            background: #ff5252;
+            transform: scale(1.1);
+        }
+
+        .close-button:active {
+            transform: scale(1.05);
+        }
+
+        .decorative-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .decorative-elements::before,
+        .decorative-elements::after {
+            content: '';
+            position: absolute;
+            font-size: 25px;
+            opacity: 0.6;
+            animation: rotate 4s linear infinite;
+        }
+
+        .decorative-elements::before {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .decorative-elements::after {
+            bottom: 10%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .sparkle-effect {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ffd700;
+            border-radius: 50%;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 10px;
+            }
+            
+            .letter-scene {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .bear {
+                font-size: 70px;
+            }
+            
+            .letter-envelope {
+                width: 280px;
+                height: 180px;
+            }
+            
+            .letter-content {
+                padding: 20px;
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .title {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            
+            .instruction {
+                font-size: 16px;
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+            
+            .letter-body {
+                font-size: 16px;
+                line-height: 1.6;
+            }
+            
+            .letter-header h2 {
+                font-size: 24px;
+            }
+            
+            .close-button {
+                top: 10px;
+                right: 15px;
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 5px;
+            }
+            
+            .bear {
+                font-size: 60px;
+            }
+            
+            .letter-envelope {
+                width: 240px;
+                height: 160px;
+            }
+            
+            .letter-paper {
+                width: 200px;
+                height: 120px;
+                padding: 15px;
+                font-size: 12px;
+            }
+            
+            .letter-content {
+                padding: 15px;
+                margin: 5px;
+            }
+            
+            .title {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+            
+            .instruction {
+                font-size: 14px;
+                padding: 10px;
+            }
+            
+            .letter-body {
+                font-size: 14px;
+                line-height: 1.5;
+            }
+            
+            .letter-header h2 {
+                font-size: 20px;
+            }
+            
+            .letter-date {
+                font-size: 14px;
+            }
+            
+            .letter-signature {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 375px) {
+            .bear {
+                font-size: 50px;
+            }
+            
+            .letter-envelope {
+                width: 220px;
+                height: 150px;
+            }
+            
+            .title {
+                font-size: 18px;
+            }
+            
+            .instruction {
+                font-size: 13px;
+            }
+            
+            .letter-body {
+                font-size: 13px;
+            }
+        }
+
+        /* iOS Safari specific fixes */
+        @supports (-webkit-appearance: none) {
+            .letter-content {
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .letter-envelope {
+                -webkit-transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+        /* Android Chrome specific fixes */
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+            .letter-content {
+                overflow-scrolling: touch;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="sakura-container" id="sakuraContainer"></div>
+    
+    <div class="main-container">
+        <h1 class="title"></h1>
+        
+        <div class="instruction">
+             Click on the letter to read the message! 
+        </div>
+        
+        <div class="letter-scene">
+            <div class="bear-container">
+                <div class="bear">🧸</div>
+            </div>
+            
+            <div class="letter-envelope" id="letterEnvelope">
+                <div class="envelope-flap"></div>
+                <div class="letter-paper">
+                    <div style="text-align: center; font-weight: bold; color: #d63384;">
+                        For cute people
+                    </div>
+                    <div style="margin-top: 10px; font-size: 12px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="letter-content" id="letterContent">
+            <button class="close-button" onclick="closeLetter()">×</button>
+            
+            <div class="decorative-elements"></div>
+            
+            <div class="letter-header">
+                <h2></h2>
+                <div class="letter-date">July 14, 2025</div>
+            </div>
+            
+           <div class="letter-body">
+    <p><span class="strong-name">For Pun</span></p>
+    <p>"You are a special person who makes us smile even on a tired day</p>
+    <p>May you have only good things in your life</p>
+    <p>No matter when, we will always be by your side"</p>
+    
+<img src="pun.jpg" alt="ภาพน่ารัก" class="pink-glow" style="margin-top: 20px; max-width: 100%; border-radius: 15px;">
+    
+</div>
+
+
+            
+            <div class="letter-signature">
+    <span class="strong-name">From Safe</span><br>
+</div>
+
+
+            
+            <div class="sparkle-effect" style="top: 20%; left: 15%;"></div>
+            <div class="sparkle-effect" style="top: 40%; right: 20%; animation-delay: 1s;"></div>
+            <div class="sparkle-effect" style="bottom: 30%; left: 25%; animation-delay: 2s;"></div>
+            <div class="sparkle-effect" style="bottom: 20%; right: 15%; animation-delay: 3s;"></div>
+        </div>
+    </div>
+
+    <script>
+        // สร้างเอฟเฟกต์ดอกซากุระ
+        function createSakura() {
+            const sakura = document.createElement('div');
+            sakura.className = 'sakura';
+            sakura.innerHTML = '🌸';
+            
+            // ตำแหน่งเริ่มต้น
+            sakura.style.left = Math.random() * 100 + 'vw';
+            sakura.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            sakura.style.animationDelay = Math.random() * 2 + 's';
+            
+            // ขนาดแบบสุ่ม
+            const sizes = ['16px', '18px', '20px', '22px', '24px'];
+            sakura.style.fontSize = sizes[Math.floor(Math.random() * sizes.length)];
+            
+            // สีแบบสุ่ม
+            const colors = ['#ffb3d9', '#ffc0cb', '#ffcccb', '#ffd1dc', '#ffe4e6'];
+            sakura.style.color = colors[Math.floor(Math.random() * colors.length)];
+            
+            document.getElementById('sakuraContainer').appendChild(sakura);
+            
+            // ลบดอกซากุระหลังจากอนิเมชั่นเสร็จ
+            setTimeout(() => {
+                if (sakura.parentNode) {
+                    sakura.parentNode.removeChild(sakura);
+                }
+            }, 5000);
+        }
+        
+        // สร้างดอกซากุระทุกๆ 300ms
+        setInterval(createSakura, 300);
+        
+        // ฟังก์ชั่นเปิดจดหมาย
+        const letterEnvelope = document.getElementById('letterEnvelope');
+        const letterContent = document.getElementById('letterContent');
+        
+        letterEnvelope.addEventListener('click', function() {
+            letterEnvelope.classList.add('opened');
+            
+            setTimeout(() => {
+                letterContent.classList.add('show');
+                letterContent.scrollIntoView({ behavior: 'smooth' });
+            }, 600);
+        });
+        
+        // ฟังก์ชั่นปิดจดหมาย
+        function closeLetter() {
+            letterContent.classList.remove('show');
+            letterEnvelope.classList.remove('opened');
+            
+            setTimeout(() => {
+                document.querySelector('.title').scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        }
+        
+        // เอฟเฟกต์เสียงเมื่อเปิดจดหมาย (แบบจำลอง)
+        letterEnvelope.addEventListener('click', function() {
+            // สร้างอนิเมชั่นพิเศษ
+            const sparkles = document.querySelectorAll('.sparkle-effect');
+            sparkles.forEach(sparkle => {
+                sparkle.style.animationPlayState = 'running';
+            });
+        });
+        
+        // เพิ่มเอฟเฟกต์ hover สำหรับตุ๊กตาหมี
+        const bear = document.querySelector('.bear');
+        bear.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1) rotate(5deg)';
+        });
+        
+        bear.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1) rotate(0deg)';
+        });
+        
+        // เอฟเฟกต์คลิกตุ๊กตาหมี
+        bear.addEventListener('click', function() {
+            const heart = document.createElement('div');
+            heart.innerHTML = '💕';
+            heart.style.position = 'absolute';
+            heart.style.fontSize = '30px';
+            heart.style.left = '50%';
+            heart.style.top = '50%';
+            heart.style.transform = 'translate(-50%, -50%)';
+            heart.style.animation = 'heartBurst 1s ease-out forwards';
+            heart.style.pointerEvents = 'none';
+            
+            this.parentElement.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 1000);
+        });
+        
+        // เพิ่ม CSS สำหรับเอฟเฟกต์ heart burst
+        const heartBurstCSS = `
+            @keyframes heartBurst {
+                0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+                50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+                100% { transform: translate(-50%, -50%) scale(2) translateY(-50px); opacity: 0; }
+            }
+        `;
+        
+        const style = document.createElement('style');
+        style.textContent = heartBurstCSS;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
